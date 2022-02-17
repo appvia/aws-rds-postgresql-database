@@ -1,0 +1,57 @@
+# Default values for aws-rds-postgresql-database.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+terraform:
+  # -- The version of Terraform used
+  version: 1.1.4
+  # -- The HashiCorp official Terraform module
+  module: https://github.com/terraform-aws-modules/terraform-aws-rds.git
+  # -- The version of the Terraform module used to create an RDS PostgreSQL database
+  moduleVersion: v3.5.0
+
+aws:
+  # -- The AWS region where the RDS PostgreSQL database should be created
+  region: ""
+  # --  The AWS credentials to be used for provisioning the RDS PostgreSQL database
+  credentials: {}
+
+rds:
+    # -- Specifies whether a database option group should be created
+    create_db_option_group: false
+    # -- Specifies whether a database parameter group should be created
+    create_db_parameter_group: false
+    # -- The database engine to use
+    engine: postgres
+    # -- The engine version to use
+    engine_version: "13.4"
+    # -- The family of the DB parameter group
+    family: postgres13
+    # -- The instance type of the RDS instance
+    instance_class: db.t3.micro
+    # -- The allocated storage in gigabytes
+    allocated_storage: "10"
+    # -- Specifies the major version of the engine that this option group should be associated with
+    major_engine_version: "13"
+    # -- Specifies whether to create a random password for the master DB user
+    create_random_password: true
+    # -- The length of the random password to create
+    random_password_length: 12
+    # -- The port on which the DB accepts connections
+    port: 5432
+    # -- The window to perform maintenance in. Syntax: 'ddd:hh24:mi-ddd:hh24:mi'. Eg: 'Mon:00:00-Mon:03:00'
+    maintenance_window: "Mon:00:00-Mon:03:00"
+    # -- The daily time range (in UTC) during which automated backups are created if they are enabled. Example: '09:46-10:16'. Must not overlap with maintenance_window
+    backup_window: "03:00-06:00"
+    # -- The days to retain backups for
+    backup_retention_period: 0
+    # -- identifier	The name of the RDS instance, if omitted, Terraform will assign a random, unique identifier
+    identifier: ""
+    # -- The DB name to create. If omitted, no database is created initially
+    db_name: ""
+    # -- Username for the master DB user
+    username: ""
+    # -- List of VPC security groups to associate
+    vpc_security_group_ids: []
+    # -- A list of VPC subnet IDs
+    subnet_ids:

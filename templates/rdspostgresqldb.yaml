@@ -1,0 +1,67 @@
+apiVersion: tf.isaaguilar.com/v1alpha1
+kind: Terraform
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    {{- include "aws-rds-postgresql-database.labels" . | nindent 4 }}
+spec:
+  terraformVersion: {{ .Values.terraform.version }}
+  terraformRunnerPullPolicy: IfNotPresent
+  terraformModule: {{ .Values.terraform.module }}?ref={{ .Values.terraform.moduleVersion }}
+  resourceDownloads:
+  - address: https://github.com/myjaffoo/terraform-providers.git//aws/aws.tf
+  ignoreDelete: false
+  {{- with .Values.aws.credentials }}
+  credentials:
+    {{- toYaml . | nindent 2 }}
+  {{- end }}
+  env:
+  - name: TF_VAR_region
+    value: {{ required "You must specify an AWS region!" .Values.aws.region }}
+  - name: TF_VAR_identifier
+    value: {{ required "You must specify a database identifier!" .Values.rds.identifier }}
+  - name: TF_VAR_db_name
+    value: {{ required "You must specify a database name!" .Values.rds.db_name }}
+  - name: TF_VAR_username
+    value: {{ required "You must specify a database username!" .Values.rds.username }}
+  - name: TF_VAR_instance_class
+    value: {{ .Values.rds.instance_class }}
+  - name: TF_VAR_allocated_storage
+    value: "{{ .Values.rds.allocated_storage }}"
+  - name: TF_VAR_subnet_ids
+    value: {{ required "You must specify a list of subnet IDs!" .Values.rds.subnet_ids | toJson | quote }}
+  - name: TF_VAR_create_db_option_group
+    value: "{{ .Values.rds.create_db_option_group }}"
+  - name: TF_VAR_create_db_parameter_group
+    value: "{{ .Values.rds.create_db_parameter_group }}"
+  - name: TF_VAR_engine
+    value: {{ .Values.rds.engine }}
+  - name: TF_VAR_engine_version
+    value: "{{ .Values.rds.engine_version }}"
+  - name: TF_VAR_family
+    value: {{ .Values.rds.family }}
+  - name: TF_VAR_major_engine_version
+    value: "{{ .Values.rds.major_engine_version }}"
+  - name: TF_VAR_create_random_password
+    value: "{{ .Values.rds.create_random_password }}"
+  - name: TF_VAR_random_password_length
+    value: "{{ .Values.rds.random_password_length }}"
+  - name: TF_VAR_port
+    value: "{{ .Values.rds.port }}"
+  - name: TF_VAR_maintenance_window
+    value: "{{ .Values.rds.maintenance_window }}"
+  - name: TF_VAR_backup_window
+    value: "{{ .Values.rds.backup_window }}"
+  - name: TF_VAR_backup_retention_period
+    value: "{{ .Values.rds.backup_retention_period }}"
+  - name: TF_VAR_vpc_security_group_ids
+    value: {{ .Values.rds.vpc_security_group_ids | toJson | quote }}
+  outputsSecret: "{{ .Chart.Name }}-outputs"
+  customBackend: |-
+    terraform {
+      backend "kubernetes" {
+        secret_suffix    = "{{ .Chart.Name }}"
+        in_cluster_config  = true
+        namespace = "{{ .Release.Namespace }}"
+      }
+    }
