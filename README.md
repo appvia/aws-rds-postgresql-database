@@ -12,15 +12,16 @@ helm upgrade --install terraform-operator isaaguilar/terraform-operator \
   --version v0.2.1 --namespace tf-system --create-namespace
 ```
 
-<!-- ## Get Repo Info
+## Get Repo Info
 ```bash
-helm repo add appvia-community https://...
+helm repo add appvia-community https://appvia-community.storage.googleapis.com
 helm repo update
-``` -->
+helm repo search appvia-community
+```
 
 ## Install Chart
 ```bash
-helm install [RELEASE_NAME] [CHART] \
+helm install [RELEASE_NAME] appvia-community/aws-rds-postgresql-database \
   --namespace [NAMESPACE] \
   --create-namespace \
   --set aws.region=[AWS_REGION] \
@@ -34,7 +35,7 @@ helm install [RELEASE_NAME] [CHART] \
 
 ## Upgrade Chart
 ```bash
-helm upgrade --install [RELEASE_NAME] [CHART] \
+helm upgrade --install [RELEASE_NAME] appvia-community/aws-rds-postgresql-database \
   --namespace [NAMESPACE] \
   --create-namespace \
   --set aws.region=[AWS_REGION] \
@@ -54,7 +55,7 @@ helm uninstall [RELEASE_NAME]
 
 ## Example Usage
 ```bash
-helm upgrade --install aws-rds-postgresql-database . \
+helm upgrade --install aws-rds-postgresql-database appvia-community/aws-rds-postgresql-database \
   --namespace my-ns \
   --set aws.region=eu-west-2 \
   --set rds.identifier=mydbinst \
