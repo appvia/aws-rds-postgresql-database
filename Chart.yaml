@@ -4,3 +4,4 @@ description: AWS RDS PostgreSQL database Helm chart for the [Terraform-operator]
 type: application
 version: 0.1.0
 appVersion: "3.5.0"
+icon: https://raw.githubusercontent.com/appvia/terraform-providers/main/aws/RDS_Database.png
